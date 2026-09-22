@@ -1,0 +1,64 @@
+{
+  "id": "yanxuan/function/search_to_detail",
+  "name": "search_to_detail",
+  "display_name": "网易严选搜索进入商品详情",
+  "description": "验证搜索商品后点击结果可正常进入商品详情页",
+  "category": "function",
+  "module": "search",
+  "submodule": "goods_search",
+  "suites": "regression",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 关闭活动弹窗\n2. 搜索商品\n3. 点击第一个商品",
+  "expected": "商品详情页加载完成且商品名非空",
+  "author": "workflow_planner",
+  "data": "搜索关键词: 毛巾",
+  "metadata": {
+    "driver": "app_driver",
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭活动弹窗",
+      "params": {}
+    },
+    {
+      "id": "step_search",
+      "type": "step",
+      "step_id": "step_search",
+      "label": "搜索商品",
+      "params": {"text": "毛巾"}
+    },
+    {
+      "id": "step_click_first_goods",
+      "type": "step",
+      "step_id": "click_first_goods",
+      "label": "点击第一个商品",
+      "params": {}
+    },
+    {
+      "id": "check_goods_detail_loaded",
+      "type": "check",
+      "check_id": "check_goods_detail_loaded",
+      "label": "检查详情页加载",
+      "params": {}
+    },
+    {
+      "id": "check_goods_name_not_empty",
+      "type": "check",
+      "check_id": "check_goods_name_not_empty",
+      "label": "检查商品名非空",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_search", "condition": "pass"},
+    {"source": "step_search", "target": "step_click_first_goods", "condition": "pass"},
+    {"source": "step_click_first_goods", "target": "check_goods_detail_loaded", "condition": "pass"},
+    {"source": "check_goods_detail_loaded", "target": "check_goods_name_not_empty", "condition": "pass"}
+  ]
+}

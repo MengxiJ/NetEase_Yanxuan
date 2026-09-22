@@ -1,0 +1,62 @@
+{
+  "id": "yanxuan/ui/mine_order_service_ui_check",
+  "name": "mine_order_service_ui_check",
+  "display_name": "网易严选个人中心订单与服务入口检查",
+  "description": "验证个人中心订单入口（全部订单/待付款/待评价）与服务入口（收藏/足迹/退换售后/客服服务）",
+  "category": "ui",
+  "module": "mine",
+  "submodule": "order_service",
+  "suites": "ui",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 关闭活动弹窗\n2. 进入个人中心\n3. 验证个人中心加载\n4. 验证订单入口全部可见\n5. 验证服务入口全部可见",
+  "expected": "订单入口（全部订单/待付款/待评价）与服务入口（收藏/足迹/退换售后/客服服务）均正确展示",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭活动弹窗",
+      "params": {}
+    },
+    {
+      "id": "step_go_mine",
+      "type": "step",
+      "step_id": "step_go_mine",
+      "label": "进入个人中心",
+      "params": {}
+    },
+    {
+      "id": "check_mine_loaded",
+      "type": "check",
+      "check_id": "check_mine_loaded",
+      "label": "验证个人中心加载",
+      "params": {}
+    },
+    {
+      "id": "check_full_order_entries",
+      "type": "check",
+      "check_id": "check_full_order_entries",
+      "label": "验证订单入口全部可见",
+      "params": {}
+    },
+    {
+      "id": "check_full_service_entries",
+      "type": "check",
+      "check_id": "check_full_service_entries",
+      "label": "验证服务入口全部可见",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_go_mine", "condition": "pass"},
+    {"source": "step_go_mine", "target": "check_mine_loaded", "condition": "pass"},
+    {"source": "check_mine_loaded", "target": "check_full_order_entries", "condition": "pass"},
+    {"source": "check_full_order_entries", "target": "check_full_service_entries", "condition": "pass"}
+  ]
+}

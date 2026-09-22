@@ -1,0 +1,78 @@
+{
+  "id": "yanxuan/ui/search_flow_ui_check",
+  "name": "search_flow_ui_check",
+  "display_name": "网易严选搜索页到结果页联动检查",
+  "description": "验证搜索链路界面联动：搜索页加载、搜索按钮、热门关键词区、输入后结果页命中",
+  "category": "ui",
+  "module": "search",
+  "submodule": "ui_flow",
+  "suites": "ui",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 关闭活动弹窗\n2. 点击搜索框进入搜索页\n3. 验证搜索页加载与搜索按钮\n4. 验证热门关键词区\n5. 输入关键词搜索\n6. 验证结果页命中关键词",
+  "expected": "搜索页界面元素完整，输入后正确跳转结果页并命中关键词",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭活动弹窗",
+      "params": {}
+    },
+    {
+      "id": "step_click_search_box",
+      "type": "step",
+      "step_id": "click_search_box",
+      "label": "点击搜索框",
+      "params": {}
+    },
+    {
+      "id": "check_search_page_loaded",
+      "type": "check",
+      "check_id": "check_search_page_loaded",
+      "label": "验证搜索页加载",
+      "params": {}
+    },
+    {
+      "id": "check_search_page_btn_visible",
+      "type": "check",
+      "check_id": "check_search_page_btn_visible",
+      "label": "验证搜索按钮",
+      "params": {}
+    },
+    {
+      "id": "check_hot_keywords_visible",
+      "type": "check",
+      "check_id": "check_hot_keywords_visible",
+      "label": "验证热门关键词区",
+      "params": {}
+    },
+    {
+      "id": "step_input_search_text",
+      "type": "step",
+      "step_id": "input_search_text",
+      "label": "输入关键词并搜索",
+      "params": {"text": "饼干"}
+    },
+    {
+      "id": "check_search_result",
+      "type": "check",
+      "check_id": "check_search_result",
+      "label": "验证结果页命中",
+      "params": {"expected_text": "饼干"}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_click_search_box", "condition": "pass"},
+    {"source": "step_click_search_box", "target": "check_search_page_loaded", "condition": "pass"},
+    {"source": "check_search_page_loaded", "target": "check_search_page_btn_visible", "condition": "pass"},
+    {"source": "check_search_page_btn_visible", "target": "check_hot_keywords_visible", "condition": "pass"},
+    {"source": "check_hot_keywords_visible", "target": "step_input_search_text", "condition": "pass"},
+    {"source": "step_input_search_text", "target": "check_search_result", "condition": "pass"}
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "id": "yanxuan/ui/mine_service_ui_check",
+  "name": "mine_service_ui_check",
+  "display_name": "网易严选个人中心服务区界面检查",
+  "description": "验证个人中心服务相关界面元素：用户昵称、待付款订单入口、收藏服务入口、设置入口",
+  "category": "ui",
+  "module": "mine",
+  "submodule": "ui_check",
+  "suites": "ui",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 关闭活动弹窗\n2. 进入个人中心\n3. 验证个人中心加载\n4. 验证用户昵称\n5. 验证待付款订单入口\n6. 验证收藏服务入口\n7. 验证设置入口",
+  "expected": "个人中心服务区界面元素正确展示",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭活动弹窗",
+      "params": {}
+    },
+    {
+      "id": "step_go_mine",
+      "type": "step",
+      "step_id": "step_go_mine",
+      "label": "进入个人中心",
+      "params": {}
+    },
+    {
+      "id": "check_mine_loaded",
+      "type": "check",
+      "check_id": "check_mine_loaded",
+      "label": "验证个人中心加载",
+      "params": {}
+    },
+    {
+      "id": "check_user_nickname_visible",
+      "type": "check",
+      "check_id": "check_user_nickname_visible",
+      "label": "验证用户昵称",
+      "params": {}
+    },
+    {
+      "id": "check_wait_pay_entry_visible",
+      "type": "check",
+      "check_id": "check_wait_pay_entry_visible",
+      "label": "验证待付款订单入口",
+      "params": {}
+    },
+    {
+      "id": "check_service_entries_visible",
+      "type": "check",
+      "check_id": "check_service_entries_visible",
+      "label": "验证收藏服务入口",
+      "params": {}
+    },
+    {
+      "id": "check_setting_visible",
+      "type": "check",
+      "check_id": "check_setting_visible",
+      "label": "验证设置入口",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_go_mine", "condition": "pass"},
+    {"source": "step_go_mine", "target": "check_mine_loaded", "condition": "pass"},
+    {"source": "check_mine_loaded", "target": "check_user_nickname_visible", "condition": "pass"},
+    {"source": "check_user_nickname_visible", "target": "check_wait_pay_entry_visible", "condition": "pass"},
+    {"source": "check_wait_pay_entry_visible", "target": "check_service_entries_visible", "condition": "pass"},
+    {"source": "check_service_entries_visible", "target": "check_setting_visible", "condition": "pass"}
+  ]
+}

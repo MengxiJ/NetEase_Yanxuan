@@ -1,0 +1,79 @@
+{
+  "id": "yanxuan/ui/cart_page_check",
+  "name": "cart_page_check",
+  "display_name": "网易严选购物车页UI界面检查",
+  "description": "验证购物车页核心UI元素（标题、领券入口、状态区、推荐区、底部导航）正常展示",
+  "category": "ui",
+  "module": "cart",
+  "submodule": "ui_check",
+  "suites": "ui",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 关闭活动弹窗\n2. 进入购物车\n3. 检查购物车页各核心元素",
+  "expected": "购物车页所有核心UI元素正常展示（空态/有商品状态均有效）",
+  "author": "workflow_planner",
+  "metadata": {
+    "driver": "app_driver",
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭活动弹窗",
+      "params": {}
+    },
+    {
+      "id": "step_go_cart",
+      "type": "step",
+      "step_id": "step_go_cart",
+      "label": "进入购物车",
+      "params": {}
+    },
+    {
+      "id": "check_cart_page_loaded",
+      "type": "check",
+      "check_id": "check_cart_page_loaded",
+      "label": "检查购物车页加载",
+      "params": {}
+    },
+    {
+      "id": "check_cart_coupon_entry_visible",
+      "type": "check",
+      "check_id": "check_cart_coupon_entry_visible",
+      "label": "检查领券入口",
+      "params": {}
+    },
+    {
+      "id": "check_cart_state_valid",
+      "type": "check",
+      "check_id": "check_cart_state_valid",
+      "label": "检查购物车状态（空态或商品）",
+      "params": {}
+    },
+    {
+      "id": "check_cart_recommend_visible",
+      "type": "check",
+      "check_id": "check_cart_recommend_visible",
+      "label": "检查会员推荐区（空态Pro会员横幅）",
+      "params": {}
+    },
+    {
+      "id": "check_bottom_tabs_visible",
+      "type": "check",
+      "check_id": "check_bottom_tabs_visible",
+      "label": "检查底部导航",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_go_cart", "condition": "pass"},
+    {"source": "step_go_cart", "target": "check_cart_page_loaded", "condition": "pass"},
+    {"source": "check_cart_page_loaded", "target": "check_cart_coupon_entry_visible", "condition": "pass"},
+    {"source": "check_cart_coupon_entry_visible", "target": "check_cart_state_valid", "condition": "pass"},
+    {"source": "check_cart_state_valid", "target": "check_cart_recommend_visible", "condition": "pass"},
+    {"source": "check_cart_recommend_visible", "target": "check_bottom_tabs_visible", "condition": "pass"}
+  ]
+}

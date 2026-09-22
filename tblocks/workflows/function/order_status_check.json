@@ -1,0 +1,39 @@
+{
+  "id": "yanxuan/function/order_status_check",
+  "name": "order_status_check",
+  "display_name": "网易严选待付款订单查询",
+  "description": "验证下单后可在个人中心-待付款中查询到订单",
+  "category": "function",
+  "module": "order",
+  "submodule": "order_query",
+  "suites": "regression",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 已通过 order_flow 工作流产生待付款订单",
+  "steps": "1. 关闭活动弹窗\n2. 进入个人中心-待付款\n3. 检查订单编号存在",
+  "expected": "待付款订单列表中存在订单且订单编号非空",
+  "author": "workflow_planner",
+  "metadata": {
+    "driver": "app_driver",
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭活动弹窗",
+      "params": {}
+    },
+    {
+      "id": "check_order_exists",
+      "type": "check",
+      "check_id": "check_order_exists",
+      "label": "验证待付款订单存在",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "check_order_exists", "condition": "pass"}
+  ]
+}

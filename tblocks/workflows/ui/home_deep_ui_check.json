@@ -1,0 +1,70 @@
+{
+  "id": "yanxuan/ui/home_deep_ui_check",
+  "name": "home_deep_ui_check",
+  "display_name": "网易严选首页深度界面检查",
+  "description": "深度验证首页界面元素：核心元素汇总、消息入口、搜索按钮、推荐列表、分类入口",
+  "category": "ui",
+  "module": "home",
+  "submodule": "ui_check",
+  "suites": "ui",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 关闭活动弹窗\n2. 验证核心元素汇总（搜索框/轮播/金刚区/推荐/底部导航）\n3. 验证消息入口\n4. 验证搜索按钮\n5. 验证推荐商品列表\n6. 验证分类入口",
+  "expected": "首页全部核心界面元素正确展示",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭活动弹窗",
+      "params": {}
+    },
+    {
+      "id": "check_all_core_elements",
+      "type": "check",
+      "check_id": "check_all_core_elements",
+      "label": "核心元素汇总检查",
+      "params": {}
+    },
+    {
+      "id": "check_message_entrance_visible",
+      "type": "check",
+      "check_id": "check_message_entrance_visible",
+      "label": "验证消息入口",
+      "params": {}
+    },
+    {
+      "id": "check_search_btn_visible",
+      "type": "check",
+      "check_id": "check_search_btn_visible",
+      "label": "验证搜索按钮",
+      "params": {}
+    },
+    {
+      "id": "check_recommend_list_visible",
+      "type": "check",
+      "check_id": "check_recommend_list_visible",
+      "label": "验证推荐商品列表",
+      "params": {}
+    },
+    {
+      "id": "check_category_entry_exists",
+      "type": "check",
+      "check_id": "check_category_entry_exists",
+      "label": "验证分类入口",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "check_all_core_elements", "condition": "pass"},
+    {"source": "check_all_core_elements", "target": "check_message_entrance_visible", "condition": "pass"},
+    {"source": "check_message_entrance_visible", "target": "check_search_btn_visible", "condition": "pass"},
+    {"source": "check_search_btn_visible", "target": "check_recommend_list_visible", "condition": "pass"},
+    {"source": "check_recommend_list_visible", "target": "check_category_entry_exists", "condition": "pass"}
+  ]
+}

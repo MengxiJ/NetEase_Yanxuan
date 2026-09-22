@@ -1,0 +1,52 @@
+{
+  "id": "yanxuan/function/add_address",
+  "name": "add_address",
+  "display_name": "网易严选添加收货地址",
+  "description": "验证个人中心中可成功添加一条收货地址",
+  "category": "function",
+  "module": "address",
+  "submodule": "address_manage",
+  "suites": "regression",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 进入个人中心-设置-我的地址\n2. 选择省市区\n3. 填写详细地址、收货人、手机号并保存",
+  "expected": "地址列表展示新增的收货人信息",
+  "author": "workflow_planner",
+  "data": "收货人: 张三, 手机号: 13800138000, 详细地址: 科技园北路1号",
+  "metadata": {
+    "driver": "app_driver",
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭弹窗并回到首页",
+      "params": {}
+    },
+    {
+      "id": "step_add_default_address",
+      "type": "step",
+      "step_id": "step_add_default_address",
+      "label": "添加默认收货地址",
+      "params": {
+        "detail": "科技园北路1号",
+        "name": "张三",
+        "phone": "13800138000"
+      }
+    },
+    {
+      "id": "check_add_address_success",
+      "type": "check",
+      "check_id": "check_add_address_success",
+      "label": "验证地址添加成功",
+      "params": {"expected_name": "张三"}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_add_default_address", "condition": "pass"},
+    {"source": "step_add_default_address", "target": "check_add_address_success", "condition": "pass"}
+  ]
+}

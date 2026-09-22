@@ -1,0 +1,70 @@
+{
+  "id": "yanxuan/function/goods_detail_back",
+  "name": "goods_detail_back",
+  "display_name": "网易严选详情页返回搜索结果",
+  "description": "验证在商品详情页按系统返回键可正确回退到搜索结果页",
+  "category": "function",
+  "module": "goods",
+  "submodule": "back_navigation",
+  "suites": "regression",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 搜索结果页有商品展示",
+  "steps": "1. 搜索商品\n2. 点击第一个商品进入详情页\n3. 验证详情页加载\n4. 按系统返回键\n5. 验证回到搜索结果页",
+  "expected": "返回后搜索结果页仍在展示",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭弹窗并回到首页",
+      "params": {}
+    },
+    {
+      "id": "step_search",
+      "type": "step",
+      "step_id": "step_search",
+      "label": "搜索商品",
+      "params": {"text": "毛巾"}
+    },
+    {
+      "id": "step_click_first_goods",
+      "type": "step",
+      "step_id": "click_first_goods",
+      "label": "点击第一个商品",
+      "params": {}
+    },
+    {
+      "id": "check_goods_detail_loaded",
+      "type": "check",
+      "check_id": "check_goods_detail_loaded",
+      "label": "验证详情页加载",
+      "params": {}
+    },
+    {
+      "id": "step_press_back",
+      "type": "step",
+      "step_id": "press_back",
+      "label": "按系统返回键",
+      "params": {}
+    },
+    {
+      "id": "check_search_result_again",
+      "type": "check",
+      "check_id": "check_search_result",
+      "label": "验证搜索结果仍在",
+      "params": {"expected_text": "毛巾"}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_search", "condition": "pass"},
+    {"source": "step_search", "target": "step_click_first_goods", "condition": "pass"},
+    {"source": "step_click_first_goods", "target": "check_goods_detail_loaded", "condition": "pass"},
+    {"source": "check_goods_detail_loaded", "target": "step_press_back", "condition": "pass"},
+    {"source": "step_press_back", "target": "check_search_result_again", "condition": "pass"}
+  ]
+}

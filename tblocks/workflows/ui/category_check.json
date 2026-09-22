@@ -1,0 +1,71 @@
+{
+  "id": "yanxuan/ui/category_check",
+  "name": "category_check",
+  "display_name": "网易严选分类页UI检查",
+  "description": "验证分类页核心UI元素（商品列表、商品条目、价格展示）正常展示",
+  "category": "ui",
+  "module": "category",
+  "submodule": "ui_check",
+  "suites": "ui",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 关闭活动弹窗\n2. 切换到分类页\n3. 检查分类页商品列表与价格展示",
+  "expected": "分类页加载完成，商品列表与价格正常展示",
+  "author": "workflow_planner",
+  "metadata": {
+    "driver": "app_driver",
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭活动弹窗",
+      "params": {}
+    },
+    {
+      "id": "step_go_category",
+      "type": "step",
+      "step_id": "step_go_category",
+      "label": "切换到分类页",
+      "params": {}
+    },
+    {
+      "id": "check_category_loaded",
+      "type": "check",
+      "check_id": "check_category_loaded",
+      "label": "检查分类页加载",
+      "params": {}
+    },
+    {
+      "id": "check_goods_list_visible",
+      "type": "check",
+      "check_id": "check_goods_list_visible",
+      "label": "检查商品列表",
+      "params": {}
+    },
+    {
+      "id": "check_goods_items_displayed",
+      "type": "check",
+      "check_id": "check_goods_items_displayed",
+      "label": "检查商品条目展示",
+      "params": {}
+    },
+    {
+      "id": "check_goods_price_displayed",
+      "type": "check",
+      "check_id": "check_goods_price_displayed",
+      "label": "检查价格展示",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_go_category", "condition": "pass"},
+    {"source": "step_go_category", "target": "check_category_loaded", "condition": "pass"},
+    {"source": "check_category_loaded", "target": "check_goods_list_visible", "condition": "pass"},
+    {"source": "check_goods_list_visible", "target": "check_goods_items_displayed", "condition": "pass"},
+    {"source": "check_goods_items_displayed", "target": "check_goods_price_displayed", "condition": "pass"}
+  ]
+}

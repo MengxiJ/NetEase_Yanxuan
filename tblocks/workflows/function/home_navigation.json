@@ -1,0 +1,103 @@
+{
+  "id": "yanxuan/function/home_navigation",
+  "name": "home_navigation",
+  "display_name": "网易严选底部导航切换",
+  "description": "验证底部导航Tab可在首页、分类、个人中心之间正确切换",
+  "category": "function",
+  "module": "home",
+  "submodule": "navigation",
+  "suites": "smoke",
+  "priority": "P0",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 关闭活动弹窗\n2. 检查底部导航可见\n3. 首页 -> 分类 -> 首页 -> 个人中心 -> 首页 依次切换并验证",
+  "expected": "每次切换后目标页面正确加载",
+  "author": "workflow_planner",
+  "metadata": {
+    "driver": "app_driver",
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭活动弹窗",
+      "params": {}
+    },
+    {
+      "id": "check_bottom_tabs_visible",
+      "type": "check",
+      "check_id": "check_bottom_tabs_visible",
+      "label": "检查底部导航",
+      "params": {}
+    },
+    {
+      "id": "step_go_category",
+      "type": "step",
+      "step_id": "step_go_category",
+      "label": "切换到分类页",
+      "params": {}
+    },
+    {
+      "id": "check_category_loaded",
+      "type": "check",
+      "check_id": "check_category_loaded",
+      "label": "验证分类页加载",
+      "params": {}
+    },
+    {
+      "id": "step_back_home_1",
+      "type": "step",
+      "step_id": "step_go_home",
+      "label": "返回首页",
+      "params": {}
+    },
+    {
+      "id": "check_home_loaded_1",
+      "type": "check",
+      "check_id": "check_home_loaded",
+      "label": "验证首页加载",
+      "params": {}
+    },
+    {
+      "id": "step_go_mine",
+      "type": "step",
+      "step_id": "step_go_mine",
+      "label": "切换到个人中心",
+      "params": {}
+    },
+    {
+      "id": "check_mine_loaded",
+      "type": "check",
+      "check_id": "check_mine_loaded",
+      "label": "验证个人中心加载",
+      "params": {}
+    },
+    {
+      "id": "step_back_home_2",
+      "type": "step",
+      "step_id": "step_go_home",
+      "label": "再次返回首页",
+      "params": {}
+    },
+    {
+      "id": "check_home_loaded_2",
+      "type": "check",
+      "check_id": "check_home_loaded",
+      "label": "再次验证首页加载",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "check_bottom_tabs_visible", "condition": "pass"},
+    {"source": "check_bottom_tabs_visible", "target": "step_go_category", "condition": "pass"},
+    {"source": "step_go_category", "target": "check_category_loaded", "condition": "pass"},
+    {"source": "check_category_loaded", "target": "step_back_home_1", "condition": "pass"},
+    {"source": "step_back_home_1", "target": "check_home_loaded_1", "condition": "pass"},
+    {"source": "check_home_loaded_1", "target": "step_go_mine", "condition": "pass"},
+    {"source": "step_go_mine", "target": "check_mine_loaded", "condition": "pass"},
+    {"source": "check_mine_loaded", "target": "step_back_home_2", "condition": "pass"},
+    {"source": "step_back_home_2", "target": "check_home_loaded_2", "condition": "pass"}
+  ]
+}

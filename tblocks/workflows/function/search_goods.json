@@ -1,0 +1,54 @@
+{
+  "id": "yanxuan/function/search_goods",
+  "name": "search_goods",
+  "display_name": "网易严选搜索商品",
+  "description": "验证在首页搜索框输入关键词后能正确展示搜索结果",
+  "category": "function",
+  "module": "search",
+  "submodule": "goods_search",
+  "suites": "smoke",
+  "priority": "P0",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 点击搜索框\n2. 输入搜索关键词\n3. 点击搜索按钮",
+  "expected": "搜索结果列表展示与关键词相关的商品",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭弹窗并回到首页",
+      "params": {}
+    },
+    {
+      "id": "step_click_search_box",
+      "type": "step",
+      "step_id": "click_search_box",
+      "label": "点击搜索框",
+      "params": {}
+    },
+    {
+      "id": "step_input_search_text",
+      "type": "step",
+      "step_id": "input_search_text",
+      "label": "输入搜索内容",
+      "params": {"text": "${custom_params.keyword}"}
+    },
+    {
+      "id": "check_search_result",
+      "type": "check",
+      "check_id": "check_search_result",
+      "label": "验证搜索结果",
+      "params": {"expected_text": "${custom_params.keyword}"}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_click_search_box", "condition": "pass"},
+    {"source": "step_click_search_box", "target": "step_input_search_text", "condition": "pass"},
+    {"source": "step_input_search_text", "target": "check_search_result", "condition": "pass"}
+  ]
+}

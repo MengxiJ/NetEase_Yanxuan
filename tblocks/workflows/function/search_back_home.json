@@ -1,0 +1,70 @@
+{
+  "id": "yanxuan/function/search_back_home",
+  "name": "search_back_home",
+  "display_name": "网易严选搜索页返回首页",
+  "description": "验证在搜索结果页按系统返回键可正确回退到首页",
+  "category": "function",
+  "module": "search",
+  "submodule": "back_navigation",
+  "suites": "regression",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 搜索商品并验证结果\n2. 按系统返回键\n3. 验证回到首页",
+  "expected": "返回后首页正确加载",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭弹窗并回到首页",
+      "params": {}
+    },
+    {
+      "id": "step_search",
+      "type": "step",
+      "step_id": "step_search",
+      "label": "搜索商品",
+      "params": {"text": "毛巾"}
+    },
+    {
+      "id": "check_search_result",
+      "type": "check",
+      "check_id": "check_search_result",
+      "label": "验证搜索结果",
+      "params": {"expected_text": "毛巾"}
+    },
+    {
+      "id": "step_press_back_1",
+      "type": "step",
+      "step_id": "press_back",
+      "label": "按系统返回键（退出搜索结果）",
+      "params": {}
+    },
+    {
+      "id": "step_press_back_2",
+      "type": "step",
+      "step_id": "press_back",
+      "label": "按系统返回键（退出搜索输入页）",
+      "params": {}
+    },
+    {
+      "id": "check_home_loaded",
+      "type": "check",
+      "check_id": "check_home_loaded",
+      "label": "验证回到首页",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_search", "condition": "pass"},
+    {"source": "step_search", "target": "check_search_result", "condition": "pass"},
+    {"source": "check_search_result", "target": "step_press_back_1", "condition": "pass"},
+    {"source": "step_press_back_1", "target": "step_press_back_2", "condition": "pass"},
+    {"source": "step_press_back_2", "target": "check_home_loaded", "condition": "pass"}
+  ]
+}

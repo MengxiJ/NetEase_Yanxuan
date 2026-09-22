@@ -1,0 +1,79 @@
+{
+  "id": "yanxuan/function/login_success",
+  "name": "login_success",
+  "display_name": "网易严选登录成功",
+  "description": "验证用户使用正确账号密码可成功登录网易严选",
+  "category": "account",
+  "module": "login",
+  "submodule": "auth",
+  "suites": "smoke",
+  "priority": "P0",
+  "precondition": "1. 网易严选App已安装\n2. 处于未登录状态",
+  "steps": "1. 启动App并同意协议\n2. 进入个人中心\n3. 切换邮箱登录\n4. 输入用户名和密码\n5. 点击登录",
+  "expected": "登录成功，显示用户昵称",
+  "author": "workflow_planner",
+  "metadata": {
+    "driver": "first_app_driver",
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_click_agree",
+      "type": "step",
+      "step_id": "click_agreed",
+      "label": "同意协议",
+      "params": {}
+    },
+    {
+      "id": "step_click_mine",
+      "type": "step",
+      "step_id": "click_mine",
+      "label": "进入个人中心",
+      "params": {}
+    },
+    {
+      "id": "step_switch_login_type",
+      "type": "step",
+      "step_id": "switch_login_type",
+      "label": "切换邮箱登录",
+      "params": {}
+    },
+    {
+      "id": "step_input_username",
+      "type": "step",
+      "step_id": "input_username",
+      "label": "输入用户名",
+      "params": {"username": "${custom_params.username}"}
+    },
+    {
+      "id": "step_input_password",
+      "type": "step",
+      "step_id": "input_password",
+      "label": "输入密码",
+      "params": {"password": "${custom_params.password}"}
+    },
+    {
+      "id": "step_click_login",
+      "type": "step",
+      "step_id": "click_login",
+      "label": "点击登录",
+      "params": {}
+    },
+    {
+      "id": "check_login_success",
+      "type": "check",
+      "check_id": "check_login_success",
+      "label": "验证登录成功",
+      "params": {"expected_text": "用户"}
+    }
+  ],
+  "edges": [
+    {"source": "step_click_agree", "target": "step_click_mine", "condition": "pass"},
+    {"source": "step_click_mine", "target": "step_switch_login_type", "condition": "pass"},
+    {"source": "step_switch_login_type", "target": "step_input_username", "condition": "pass"},
+    {"source": "step_input_username", "target": "step_input_password", "condition": "pass"},
+    {"source": "step_input_password", "target": "step_click_login", "condition": "pass"},
+    {"source": "step_click_login", "target": "check_login_success", "condition": "pass"}
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "id": "yanxuan/function/add_to_cart",
+  "name": "add_to_cart",
+  "display_name": "网易严选加入购物车",
+  "description": "验证搜索商品后可将商品加入购物车",
+  "category": "function",
+  "module": "cart",
+  "submodule": "add_cart",
+  "suites": "smoke",
+  "priority": "P0",
+  "precondition": "1. 已登录网易严选\n2. 搜索结果页有商品展示",
+  "steps": "1. 搜索商品\n2. 点击第一个商品\n3. 点击加入购物车\n4. 选择规格并确认",
+  "expected": "Toast提示加入购物车成功",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭弹窗并回到首页",
+      "params": {}
+    },
+    {
+      "id": "step_search",
+      "type": "step",
+      "step_id": "step_search",
+      "label": "搜索商品",
+      "params": {"text": "毛巾"}
+    },
+    {
+      "id": "step_click_first_goods",
+      "type": "step",
+      "step_id": "click_first_goods",
+      "label": "点击第一个商品",
+      "params": {}
+    },
+    {
+      "id": "step_add_to_cart",
+      "type": "step",
+      "step_id": "step_add_to_cart",
+      "label": "加入购物车",
+      "params": {}
+    },
+    {
+      "id": "check_add_cart_success",
+      "type": "check",
+      "check_id": "check_add_cart_success",
+      "label": "验证加入购物车成功",
+      "params": {"expected_text": "加入购物车成功"}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_search", "condition": "pass"},
+    {"source": "step_search", "target": "step_click_first_goods", "condition": "pass"},
+    {"source": "step_click_first_goods", "target": "step_add_to_cart", "condition": "pass"},
+    {"source": "step_add_to_cart", "target": "check_add_cart_success", "condition": "pass"}
+  ]
+}

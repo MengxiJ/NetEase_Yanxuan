@@ -1,0 +1,62 @@
+{
+  "id": "yanxuan/function/order_flow",
+  "name": "order_flow",
+  "display_name": "网易严选下单流程",
+  "description": "端到端验证：搜索商品→加入购物车→结算→提交订单",
+  "category": "business",
+  "module": "order",
+  "submodule": "full_flow",
+  "suites": "regression",
+  "priority": "P0",
+  "precondition": "1. 已登录网易严选\n2. 购物车中有商品",
+  "steps": "1. 进入购物车\n2. 点击结算\n3. 点击提交订单",
+  "expected": "订单提交成功，生成待付款订单",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭弹窗并回到首页",
+      "params": {}
+    },
+    {
+      "id": "step_click_cart",
+      "type": "step",
+      "step_id": "click_cart",
+      "label": "进入购物车",
+      "params": {}
+    },
+    {
+      "id": "step_click_settlement",
+      "type": "step",
+      "step_id": "click_settlement",
+      "label": "点击结算",
+      "params": {}
+    },
+    {
+      "id": "step_click_submit_order",
+      "type": "step",
+      "step_id": "click_submit_order",
+      "label": "提交订单",
+      "params": {}
+    },
+    {
+      "id": "check_payment_page_opened",
+      "type": "check",
+      "check_id": "check_payment_page_opened",
+      "label": "验证支付页已打开",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_click_cart", "condition": "pass"},
+    {"source": "step_click_cart", "target": "step_click_settlement", "condition": "pass"},
+    {"source": "step_click_settlement", "target": "step_click_submit_order", "condition": "pass"},
+    {"source": "step_click_submit_order", "target": "check_payment_page_opened", "condition": "pass"}
+  ]
+}

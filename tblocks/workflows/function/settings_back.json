@@ -1,0 +1,62 @@
+{
+  "id": "yanxuan/function/settings_back",
+  "name": "settings_back",
+  "display_name": "网易严选设置页返回个人中心",
+  "description": "验证在设置页按系统返回键可正确回退到个人中心",
+  "category": "function",
+  "module": "settings",
+  "submodule": "back_navigation",
+  "suites": "regression",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 进入设置页\n2. 验证设置页加载\n3. 按系统返回键\n4. 验证回到个人中心",
+  "expected": "返回后个人中心正确加载",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭弹窗并回到首页",
+      "params": {}
+    },
+    {
+      "id": "step_go_settings",
+      "type": "step",
+      "step_id": "step_go_settings",
+      "label": "进入设置页",
+      "params": {}
+    },
+    {
+      "id": "check_settings_loaded",
+      "type": "check",
+      "check_id": "check_settings_loaded",
+      "label": "验证设置页加载",
+      "params": {}
+    },
+    {
+      "id": "step_press_back",
+      "type": "step",
+      "step_id": "press_back",
+      "label": "按系统返回键",
+      "params": {}
+    },
+    {
+      "id": "check_mine_loaded",
+      "type": "check",
+      "check_id": "check_mine_loaded",
+      "label": "验证回到个人中心",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_go_settings", "condition": "pass"},
+    {"source": "step_go_settings", "target": "check_settings_loaded", "condition": "pass"},
+    {"source": "check_settings_loaded", "target": "step_press_back", "condition": "pass"},
+    {"source": "step_press_back", "target": "check_mine_loaded", "condition": "pass"}
+  ]
+}

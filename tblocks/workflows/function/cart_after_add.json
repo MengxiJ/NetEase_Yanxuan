@@ -1,0 +1,86 @@
+{
+  "id": "yanxuan/function/cart_after_add",
+  "name": "cart_after_add",
+  "display_name": "网易严选加购后购物车联动",
+  "description": "验证商品加入购物车后，购物车页面正确加载并展示有效状态",
+  "category": "function",
+  "module": "cart",
+  "submodule": "cart_linkage",
+  "suites": "regression",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 搜索商品并进入详情页\n2. 加入购物车\n3. 验证加购成功提示\n4. 切换到购物车Tab\n5. 验证购物车页面加载与状态",
+  "expected": "购物车页面正确加载，且商品列表或空态提示展示正常",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭弹窗并回到首页",
+      "params": {}
+    },
+    {
+      "id": "step_search",
+      "type": "step",
+      "step_id": "step_search",
+      "label": "搜索商品",
+      "params": {"text": "毛巾"}
+    },
+    {
+      "id": "step_click_first_goods",
+      "type": "step",
+      "step_id": "click_first_goods",
+      "label": "点击第一个商品",
+      "params": {}
+    },
+    {
+      "id": "step_add_to_cart",
+      "type": "step",
+      "step_id": "step_add_to_cart",
+      "label": "加入购物车",
+      "params": {}
+    },
+    {
+      "id": "check_add_cart_success",
+      "type": "check",
+      "check_id": "check_add_cart_success",
+      "label": "验证加入购物车成功",
+      "params": {"expected_text": "加入购物车成功"}
+    },
+    {
+      "id": "step_go_cart",
+      "type": "step",
+      "step_id": "step_go_cart",
+      "label": "切换到购物车",
+      "params": {}
+    },
+    {
+      "id": "check_cart_page_loaded",
+      "type": "check",
+      "check_id": "check_cart_page_loaded",
+      "label": "验证购物车页加载",
+      "params": {}
+    },
+    {
+      "id": "check_cart_state_valid",
+      "type": "check",
+      "check_id": "check_cart_state_valid",
+      "label": "验证购物车状态有效",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_search", "condition": "pass"},
+    {"source": "step_search", "target": "step_click_first_goods", "condition": "pass"},
+    {"source": "step_click_first_goods", "target": "step_add_to_cart", "condition": "pass"},
+    {"source": "step_add_to_cart", "target": "check_add_cart_success", "condition": "pass"},
+    {"source": "check_add_cart_success", "target": "step_go_cart", "condition": "pass"},
+    {"source": "step_go_cart", "target": "check_cart_page_loaded", "condition": "pass"},
+    {"source": "check_cart_page_loaded", "target": "check_cart_state_valid", "condition": "pass"}
+  ]
+}

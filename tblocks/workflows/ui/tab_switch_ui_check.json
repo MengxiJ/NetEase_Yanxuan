@@ -1,0 +1,94 @@
+{
+  "id": "yanxuan/ui/tab_switch_ui_check",
+  "name": "tab_switch_ui_check",
+  "display_name": "网易严选底部Tab轮巡界面检查",
+  "description": "验证底部导航四个Tab（首页/分类/购物车/个人）依次切换后各页面正确加载且底部导航常驻",
+  "category": "ui",
+  "module": "home",
+  "submodule": "tab_switch",
+  "suites": "ui",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 关闭活动弹窗并验证首页\n2. 依次切换到分类/购物车/个人并验证各页加载\n3. 验证底部导航常驻可见",
+  "expected": "四个Tab页面均正确加载，底部导航全程可见",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭活动弹窗",
+      "params": {}
+    },
+    {
+      "id": "check_home_loaded",
+      "type": "check",
+      "check_id": "check_home_loaded",
+      "label": "验证首页加载",
+      "params": {}
+    },
+    {
+      "id": "step_go_category",
+      "type": "step",
+      "step_id": "step_go_category",
+      "label": "切换到分类页",
+      "params": {}
+    },
+    {
+      "id": "check_category_loaded",
+      "type": "check",
+      "check_id": "check_category_loaded",
+      "label": "验证分类页加载",
+      "params": {}
+    },
+    {
+      "id": "step_go_cart",
+      "type": "step",
+      "step_id": "step_go_cart",
+      "label": "切换到购物车页",
+      "params": {}
+    },
+    {
+      "id": "check_cart_page_loaded",
+      "type": "check",
+      "check_id": "check_cart_page_loaded",
+      "label": "验证购物车页加载",
+      "params": {}
+    },
+    {
+      "id": "step_go_mine",
+      "type": "step",
+      "step_id": "step_go_mine",
+      "label": "切换到个人中心",
+      "params": {}
+    },
+    {
+      "id": "check_mine_loaded",
+      "type": "check",
+      "check_id": "check_mine_loaded",
+      "label": "验证个人中心加载",
+      "params": {}
+    },
+    {
+      "id": "check_bottom_tabs_visible",
+      "type": "check",
+      "check_id": "check_bottom_tabs_visible",
+      "label": "验证底部导航常驻",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "check_home_loaded", "condition": "pass"},
+    {"source": "check_home_loaded", "target": "step_go_category", "condition": "pass"},
+    {"source": "step_go_category", "target": "check_category_loaded", "condition": "pass"},
+    {"source": "check_category_loaded", "target": "step_go_cart", "condition": "pass"},
+    {"source": "step_go_cart", "target": "check_cart_page_loaded", "condition": "pass"},
+    {"source": "check_cart_page_loaded", "target": "step_go_mine", "condition": "pass"},
+    {"source": "step_go_mine", "target": "check_mine_loaded", "condition": "pass"},
+    {"source": "check_mine_loaded", "target": "check_bottom_tabs_visible", "condition": "pass"}
+  ]
+}

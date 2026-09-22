@@ -1,0 +1,54 @@
+{
+  "id": "yanxuan/ui/mine_asset_ui_check",
+  "name": "mine_asset_ui_check",
+  "display_name": "网易严选个人中心资产区界面检查",
+  "description": "验证个人中心资产区全部入口：余额/优惠券/红包/积分/礼品卡",
+  "category": "ui",
+  "module": "mine",
+  "submodule": "asset",
+  "suites": "ui",
+  "priority": "P1",
+  "precondition": "1. 已登录网易严选\n2. 处于首页",
+  "steps": "1. 关闭活动弹窗\n2. 进入个人中心\n3. 验证个人中心加载\n4. 验证资产区全部入口可见",
+  "expected": "余额/优惠券/红包/积分/礼品卡五个资产入口均正确展示",
+  "author": "workflow_planner",
+  "metadata": {
+    "setup_hooks": ["step_launch_app"],
+    "teardown_hooks": ["step_quit_app"]
+  },
+  "nodes": [
+    {
+      "id": "step_close_popup",
+      "type": "step",
+      "step_id": "close_popup",
+      "label": "关闭活动弹窗",
+      "params": {}
+    },
+    {
+      "id": "step_go_mine",
+      "type": "step",
+      "step_id": "step_go_mine",
+      "label": "进入个人中心",
+      "params": {}
+    },
+    {
+      "id": "check_mine_loaded",
+      "type": "check",
+      "check_id": "check_mine_loaded",
+      "label": "验证个人中心加载",
+      "params": {}
+    },
+    {
+      "id": "check_full_asset_entries",
+      "type": "check",
+      "check_id": "check_full_asset_entries",
+      "label": "验证资产区全部入口",
+      "params": {}
+    }
+  ],
+  "edges": [
+    {"source": "step_close_popup", "target": "step_go_mine", "condition": "pass"},
+    {"source": "step_go_mine", "target": "check_mine_loaded", "condition": "pass"},
+    {"source": "check_mine_loaded", "target": "check_full_asset_entries", "condition": "pass"}
+  ]
+}
