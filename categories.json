@@ -1,0 +1,38 @@
+[
+  {
+    "name": "断言失败",
+    "matchedStatuses": ["failed"],
+    "messageRegex": ".*AssertionError.*",
+    "flaky": false
+  },
+  {
+    "name": "元素定位失败",
+    "matchedStatuses": ["failed"],
+    "messageRegex": ".*(TimeoutException|NoSuchElementException|ElementNotFoundException).*",
+    "flaky": false
+  },
+  {
+    "name": "Appium服务异常",
+    "matchedStatuses": ["failed"],
+    "messageRegex": ".*(WebDriverException|ConnectionRefused|NewSessionTimeout).*",
+    "flaky": false
+  },
+  {
+    "name": "接口请求失败",
+    "matchedStatuses": ["failed"],
+    "messageRegex": ".*(ConnectionError|RequestException|HTTPError).*",
+    "flaky": false
+  },
+  {
+    "name": "测试框架异常",
+    "matchedStatuses": ["broken"],
+    "messageRegex": ".*(ImportError|ModuleNotFoundError|AttributeError).*",
+    "flaky": false
+  },
+  {
+    "name": "其他失败",
+    "matchedStatuses": ["failed", "broken"],
+    "messageRegex": ".*",
+    "flaky": false
+  }
+]

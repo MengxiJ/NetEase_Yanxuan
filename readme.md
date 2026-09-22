@@ -1,12 +1,14 @@
 # 网易严选 App 自动化测试框架
 
-面向网易严选 App（Appium + UiAutomator2 + 模拟器）的企业级自动化测试框架，覆盖功能、UI 界面、接口、性能、并发与安全测试，共 **101 条自动化用例**。采用自研的「Step/Check 原子化 + JSON 工作流编排」架构，新增测试场景仅需声明式 JSON 并注册原子方法，无需编写测试代码。
+面向网易严选 App（Appium + UiAutomator2 + 模拟器）的企业级自动化测试框架，覆盖功能、UI 界面、接口、性能、并发与安全测试，共 **101 条自动化用例，全部通过**。采用自研的「Step/Check 原子化 + JSON 工作流编排」架构，新增测试场景仅需声明式 JSON 并注册原子方法，无需编写测试代码。
 
 ## 核心亮点
 
 - **声明式工作流引擎**：测试场景以 JSON（nodes + edges 节点图）描述，由 Step/Check 原子方法注册表驱动，新增场景零测试代码
 - **无接口文档的接口测试方案**：Charles 抓包回放 + 自建本地 Mock 契约，无接口文档、无外网也能验证接口行为
 - **企业级非功能覆盖**：性能（延迟分位数/吞吐/持续负载）、并发（一致性/无丢失更新/故障稳定性）、安全（注入/越权/信息泄露）、回归（冒烟 ⊂ 回归 ⊂ 全量）
+- **登录态自动保障**：`session_guard` 自动检测并恢复登录态，消除登出用例对后续用例的跨用例状态污染
+- **可视化测试报告**：Allure 报告含环境信息、失败分类、失败截图，一键生成并自动打开浏览器
 - **分层解耦架构**：PO（纯 locator）→ 原子实现层（Step/Check）→ 工作流编排层，职责清晰、易维护扩展
 - **标准化治理**：统一 step/check 返回值结构、元素定位自动重试、失败自动截图、Allure 报告
 
@@ -70,7 +72,8 @@ pythonProject11/
 │   │   ├── mine_checks.py      #   个人中心核心元素检查
 │   │   └── settings_checks.py  #   设置页元素/退出登录检查
 │   ├── utils/
-│   │   └── composer.py         # ★ 工作流编排器（节点执行、路由、变量解析）
+│   │   ├── composer.py         # ★ 工作流编排器（节点执行、路由、变量解析）
+│   │   └── session_guard.py    # ★ 登录态自动保障（检测+恢复登录，消除跨用例污染）
 │   └── workflows/              # ★ JSON 工作流用例（按类别分组）
 │       ├── function/           #   功能测试
 │       │   ├── login_success.json       # P0 登录成功
@@ -78,13 +81,18 @@ pythonProject11/
 │       │   ├── search_goods.json        # P0 商品搜索（3组关键词参数化）
 │       │   ├── add_to_cart.json         # P0 加入购物车
 │       │   ├── add_address.json         # P1 添加收货地址
-│       │   ├── order_flow.json          # P0 下单端到端
-│       │   ├── order_status_check.json  # P1 待付款订单查询
+│       │   ├── order_flow.json          # P0 下单到支付页打开验证
+│       │   ├── order_status_check.json  # P1 待付款列表页面加载验证
 │       │   ├── home_navigation.json     # P0 底部导航切换
 │       │   ├── logout.json              # P0 退出登录
 │       │   ├── search_no_result.json    # P1 搜索无结果
 │       │   ├── search_to_detail.json    # P1 搜索进入商品详情
-│       │   └── buy_now.json             # P0 立即购买
+│       │   ├── buy_now.json             # P0 立即购买
+│       │   ├── cart_after_add.json      # P1 加购后购物车联动
+│       │   ├── search_back_home.json    # P1 返回键回首页
+│       │   ├── goods_detail_back.json   # P1 返回键回搜索结果
+│       │   ├── sku_add_cart.json        # P1 规格选择加购
+│       │   └── settings_back.json       # P1 返回键回个人中心
 │       └── ui/                 #   UI界面测试
 │           ├── home_ui_check.json       # P1 首页界面检查
 │           ├── goods_detail_check.json  # P1 商品详情界面检查
@@ -115,9 +123,10 @@ pythonProject11/
 ├── log/                        # 日志存储（按天滚动）
 ├── report/                     # Allure 报告
 ├── config.py                   # 项目配置（设备、应用、账号）
-├── conftest.py                 # Pytest fixture（app_driver/first_app_driver）+ 失败截图钩子
+├── conftest.py                 # Pytest fixture + 失败截图钩子 + 环境信息生成
 ├── tools.py                    # 工具层（驱动管理、日志）
-├── cmd_allure.py               # Allure 报告生成辅助
+├── cmd_allure.py               # Allure 报告一键生成（复制分类+生成HTML+打开浏览器）
+├── categories.json             # Allure 失败分类模板
 └── pytest.ini                  # Pytest 配置（markers: smoke/regression/ui/workflow）
 ```
 
@@ -256,9 +265,52 @@ pytest scripts/test_workflow.py::TestWorkflow::test_list_workflows
 # 冒烟严格模式（CI 卡点：环境不就绪直接失败而非跳过）
 SMOKE_STRICT=1 pytest scripts/test_smoke.py
 
-# 生成 Allure 报告
+# 生成 Allure 报告并自动打开浏览器
+python cmd_allure.py
+
+# 仅生成报告不打开浏览器
+python cmd_allure.py --no-open
+
+# 或直接启动 Allure 在线服务
 allure serve report
 ```
+
+## 测试报告（Allure）
+
+框架集成 Allure 可视化报告，运行 pytest 后自动生成原始数据，一键生成 HTML 报告。
+
+### 报告内容
+- **环境信息**（`environment.properties`）：Python 版本、操作系统、Appium 版本、Allure 版本、App 包名/Activity、设备 UDID、Appium 服务地址
+- **失败分类**（`categories.json`）：断言失败、元素定位失败、Appium 服务异常、接口请求失败、测试框架异常、其他失败
+- **失败截图**：用例失败时自动截图并附加到报告
+- **步骤记录**：每个工作流节点的执行日志
+
+### 生成方式
+```bash
+# 1. 运行测试（pytest.ini 已配置 --alluredir report，自动生成原始数据）
+pytest
+
+# 2. 生成 HTML 报告并自动打开浏览器
+python cmd_allure.py
+
+# 仅生成不打开
+python cmd_allure.py --no-open
+```
+
+## 登录态自动保障
+
+`conftest.py` 的 `app_driver` fixture 在创建驱动后调用 `tblocks/utils/session_guard.py` 的 `ensure_logged_in(driver)`，自动检测并恢复登录态：
+1. 归位首页，关闭遮挡浮层
+2. 进入「个人」tab 检测 `user_name` 元素
+3. 已登录则返回首页；未登录则条件切换密码模式后自动登录
+
+该机制消除了 `logout` 用例（以未登录态收尾）对后续依赖登录态用例的跨用例状态污染。
+
+## 订单流程说明
+
+本项目**不执行真实支付**，订单相关用例设计如下：
+- **`order_flow`**：购物车 → 结算 → 提交订单 → **验证支付页已打开**（检测订单确认页提交按钮消失 + 支付页 WebView 出现）
+- **`order_status_check`**：进入「个人 → 待付款」列表，验证页面加载成功（有订单编号或空列表提示均通过）
 
 ## 接口测试（无接口文档方案）
 

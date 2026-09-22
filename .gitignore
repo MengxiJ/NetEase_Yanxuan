@@ -16,6 +16,7 @@ __pycache__/
 
 # Allure 报告生成物
 report/
+new_report/
 allure-results/
 allure-report/
 

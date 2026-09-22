@@ -79,3 +79,39 @@ def pytest_runtest_makereport(item, call):
                     )
             except Exception as e:
                 logger.error(f"[失败截图] 截图失败: {e}")
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """测试会话结束时生成 Allure 环境信息文件（environment.properties）"""
+    import platform
+    try:
+        alluredir = session.config.getoption("--alluredir")
+        if not alluredir:
+            return
+        os.makedirs(alluredir, exist_ok=True)
+        env_path = os.path.join(alluredir, "environment.properties")
+        from importlib.metadata import version as pkg_version
+        try:
+            appium_ver = pkg_version("Appium-Python-Client")
+        except Exception:
+            appium_ver = "unknown"
+        try:
+            allure_ver = pkg_version("allure-pytest")
+        except Exception:
+            allure_ver = "unknown"
+        lines = [
+            f"Python.Version={platform.python_version()}",
+            f"Platform.System={platform.system()}",
+            f"Platform.Release={platform.release()}",
+            f"Appium.Version={appium_ver}",
+            f"Allure.Version={allure_ver}",
+            f"App.Package={APP_CONFIG.get('appPackage', '')}",
+            f"App.Activity={APP_CONFIG.get('appActivity', '')}",
+            f"Device.UDID={DEVICE_CONFIG.get('udid', '')}",
+            f"Appium.Server={APPIUM_SERVER}",
+        ]
+        with open(env_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines))
+        logger.info(f"[Allure] 环境信息已写入: {env_path}")
+    except Exception as e:
+        logger.error(f"[Allure] 生成环境信息失败: {e}")
