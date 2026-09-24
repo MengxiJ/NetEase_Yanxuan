@@ -1,6 +1,8 @@
 """
 购物车模块检查实现（check 逻辑从 pages 迁出）
 """
+import time
+
 from base import logger
 from base.page_base import check_result
 from tblocks.registry import check
@@ -49,15 +51,29 @@ class CartChecks(CartPage):
 
     def check_cart_state_valid(self):
         """购物车状态判定：存在商品 或 空态提示，二者满足其一即可"""
-        has_goods = self.is_element_exist(self._goods_item, timeout=3)
+        time.sleep(1)  # 等待购物车页内容渲染完成
+        # 有商品判定：多组兜底定位器（商品项容器 / 商品名 / 商品价 / 结算按钮）
+        goods_locators = [
+            self._goods_item,
+            self._goods_name,
+            self._goods_price,
+            self._settle_btn,
+        ]
+        has_goods = False
+        for loc in goods_locators:
+            if self.is_element_exist(loc, timeout=3):
+                has_goods = True
+                break
+        # 空态提示判定
         empty = self.is_element_exist(self._empty_hint, timeout=3)
         result = has_goods or empty
+        actual = "商品" if has_goods else ("空态" if empty else "无内容")
         return check_result(
             "check_cart_state_valid",
             result,
             f"购物车状态检查{'通过' if result else '失败'}",
             expected="商品列表或空态提示",
-            actual="商品" if has_goods else ("空态" if empty else "无内容"),
+            actual=actual,
         )
 
     def check_cart_recommend_visible(self):
