@@ -18,9 +18,10 @@ from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak,
 )
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(SCRIPT_DIR)  # 项目根目录
 REPORT_DIR = os.path.join(BASE_DIR, "report")
-OUTPUT_PDF = os.path.join(BASE_DIR, "test_report.pdf")
+OUTPUT_PDF = os.path.join(SCRIPT_DIR, "test_report.pdf")
 
 pdfmetrics.registerFont(TTFont("SimHei", r"C:\Windows\Fonts\simhei.ttf"))
 

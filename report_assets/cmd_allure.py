@@ -2,8 +2,8 @@
 一键生成 Allure 测试报告并在浏览器中打开
 
 用法：
-    python cmd_allure.py            # 生成报告并自动打开浏览器
-    python cmd_allure.py --no-open  # 仅生成报告，不打开浏览器
+    python report_assets/cmd_allure.py            # 生成报告并自动打开浏览器
+    python report_assets/cmd_allure.py --no-open  # 仅生成报告，不打开浏览器
 
 前置条件：
     1. 已运行 pytest 生成 allure 原始数据（report/ 目录）
@@ -14,9 +14,10 @@ import sys
 import shutil
 import webbrowser
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(SCRIPT_DIR)  # 项目根目录
 RESULT_DIR = os.path.join(BASE_DIR, "report")
-CATEGORIES_SRC = os.path.join(BASE_DIR, "categories.json")
+CATEGORIES_SRC = os.path.join(SCRIPT_DIR, "categories.json")
 CATEGORIES_DST = os.path.join(RESULT_DIR, "categories.json")
 REPORT_DIR = os.path.join(BASE_DIR, "new_report")
 

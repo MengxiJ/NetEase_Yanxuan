@@ -1,4 +1,4 @@
-# 网易严选 App 自动化测试框架
+﻿# 网易严选 App 自动化测试框架
 
 面向网易严选 App（Appium + UiAutomator2 + 模拟器）的企业级自动化测试框架，覆盖功能、UI 界面、接口、性能、并发与安全测试，共 **101 条自动化用例，全部通过**。采用自研的「Step/Check 原子化 + JSON 工作流编排」架构，新增测试场景仅需声明式 JSON 并注册原子方法，无需编写测试代码。
 
@@ -121,12 +121,15 @@ pythonProject11/
 │   └── data/captured/          #   Charles 导出的 HAR 存放目录（内置 sample.har 示例）
 ├── img/                        # 截图存储（失败自动截图）
 ├── log/                        # 日志存储（按天滚动）
-├── report/                     # Allure 报告
+├── report/                     # Allure 原始结果（pytest 运行时生成）
+├── report_assets/              # ★ 报告相关资产（脚本 + 分类模板 + PDF 报告）
+│   ├── generate_pdf_report.py  #   PDF 测试报告生成脚本
+│   ├── cmd_allure.py           #   Allure HTML 报告一键生成（复制分类+生成HTML+打开浏览器）
+│   ├── categories.json         #   Allure 失败分类模板
+│   └── test_report.pdf         #   生成的 PDF 测试报告
 ├── config.py                   # 项目配置（设备、应用、账号）
 ├── conftest.py                 # Pytest fixture + 失败截图钩子 + 环境信息生成
 ├── tools.py                    # 工具层（驱动管理、日志）
-├── cmd_allure.py               # Allure 报告一键生成（复制分类+生成HTML+打开浏览器）
-├── categories.json             # Allure 失败分类模板
 └── pytest.ini                  # Pytest 配置（markers: smoke/regression/ui/workflow）
 ```
 
@@ -266,10 +269,10 @@ pytest scripts/test_workflow.py::TestWorkflow::test_list_workflows
 SMOKE_STRICT=1 pytest scripts/test_smoke.py
 
 # 生成 Allure 报告并自动打开浏览器
-python cmd_allure.py
+python report_assets/cmd_allure.py
 
 # 仅生成报告不打开浏览器
-python cmd_allure.py --no-open
+python report_assets/cmd_allure.py --no-open
 
 # 或直接启动 Allure 在线服务
 allure serve report
@@ -291,10 +294,10 @@ allure serve report
 pytest
 
 # 2. 生成 HTML 报告并自动打开浏览器
-python cmd_allure.py
+python report_assets/cmd_allure.py
 
 # 仅生成不打开
-python cmd_allure.py --no-open
+python report_assets/cmd_allure.py --no-open
 ```
 
 ## 登录态自动保障
